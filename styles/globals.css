@@ -1,16 +1,76 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 * {
-  box-sizing: border-box;
+    font-family: 'Aclonica', sans-serif;
+}
+
+.calendar-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.react-calendar {
+    font-size: 25px !important;
+    color: white;
+    width: 700px !important;
+    height: auto !important;
+    background-color: transparent !important;
+    border: 2px solid gold !important;
+}
+
+.react-calendar__navigation button:enabled:hover {
+    background-color: gold !important;
+    color: #0f172a !important;
+}
+
+.react-calendar__tile {
+    border: 1px solid transparent !important;
+    padding: 10px !important;
+}
+
+.react-calendar__tile--now {
+    background-color: gold !important;
+    color: #0f172a;
+}
+
+.react-calendar__tile--active {
+    background-color: transparent !important;
+    border: 1px solid gold !important;
+}
+
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+    background-color: transparent !important;
+    border: 1px solid gold !important;
+    color: gold !important;
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+    background-color: transparent !important;
+    border: 1px solid gold !important;
+}
+
+input:checked {
+    background-color: #22c55e;
+}
+
+input:checked~span:last-child {
+    --tw-translate-x: 1.75rem;
+}
+
+#translate-back input:checked~span:last-child {
+    --tw-translate-x: -1.75rem !important;
+}
+
+#translate-back input:checked {
+    background-color: #ef4444;
+}
+
+.scrollbar::-webkit-scrollbar {
+    display: none;
 }
