@@ -26,7 +26,6 @@ export default function UserDashboard() {
     }, [newEvent])
 
     useEffect(() => {
-        logout()
         fetchUserData()
     }, [fetchTrigger])
 
