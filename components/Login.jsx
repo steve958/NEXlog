@@ -1,16 +1,21 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 
-export default function Login() {
+export default function Login(props) {
+
+    const { setLoading } = props
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [username, setUsername] = useState('')
     const [error, setError] = useState(null)
     const [logging, setLogging] = useState(true)
     const [mouseHover, setMouseHover] = useState(false)
     const [passwordShow, setPasswordShow] = useState(false)
 
     const { login, signup } = useAuth()
+
+    useEffect(() => {
+        setLoading(true)
+    }, [])
 
     async function submitHandler() {
         if (!email || !password) {
@@ -24,7 +29,12 @@ export default function Login() {
             }
             return
         }
-        await signup(email, password)
+        try {
+            await signup(email, password)
+        } catch (error) {
+            setError(error.message)
+        }
+
     }
 
     return (
@@ -40,9 +50,6 @@ export default function Login() {
                 <input type="text" placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)}
                     className='outline-none duration-300 border-b-2 border-t-2 border-solid 
                 border-white focus:border-yellow-400 text-slate-900 p-2 w-full max-w-[30ch]' />
-                {!logging && <input type="text" placeholder='Username' value={username} onChange={(e) => setUsername(e.target.value)}
-                    className='outline-none duration-300 border-b-2 border-t-2 border-solid 
-                border-white focus:border-yellow-400 text-slate-900 p-2 w-full max-w-[30ch]' />}
                 <span className='relative w-full max-w-[30ch]'>
                     <input type={passwordShow ? "text" : "password"} placeholder='Password' value={password}
                         onChange={(e) => setPassword(e.target.value)} className='outline-none duration-300 border-b-2 border-t-2

@@ -6,9 +6,11 @@ import { doc, setDoc, getDoc } from 'firebase/firestore'
 import { db } from '../firebase'
 import Menu from './Menu';
 import EventCard from './EventCard';
+import Loading from './Loading';
 
-export default function UserDashboard() {
+export default function UserDashboard(props) {
 
+    const { loading, setLoading } = props
     const [value, onChange] = useState(new Date())
     const [dateClicked, setDateClicked] = useState(null)
     const [userClicked, setUserClicked] = useState(false)
@@ -18,6 +20,12 @@ export default function UserDashboard() {
     const [userData, setUserData] = useState([])
     const [newEvent, setNewEvent] = useState({})
     const { logout, currentUser } = useAuth()
+
+    useEffect(() => {
+        if (loading) {
+            setTimeout(() => { setLoading(false) }, 1200)
+        }
+    }, [loading])
 
     useEffect(() => {
         if (newEvent.date) {
@@ -57,12 +65,14 @@ export default function UserDashboard() {
                     { ...newEvent, }
                 ]
             }, { merge: false })
+            setLoading(true)
         } else {
             await setDoc(userRef, {
                 'events': [
                     { ...newEvent, }
                 ]
             }, { merge: false })
+            setLoading(true)
         }
         fetchUserData()
         setAnotherEvent(false)
@@ -80,34 +90,35 @@ export default function UserDashboard() {
     }
 
     return (
-        <div className='calendar-container relative flex flex-col select-none h-full mt-10'>
-            <Calendar onChange={onChange} value={value}
-                onClickDay={(value, e) => handleClick(value, e)} tileContent={renderTileContent} />
-            <div className='absolute right-0 top-0 -mt-10 flex gap-7'>
-                <i title={`${currentUser.email}`} className="fa-solid fa-user-ninja 
+        loading ? <Loading /> :
+            (<div className='calendar-container relative flex flex-col select-none h-full mt-10'>
+                <Calendar onChange={onChange} value={value}
+                    onClickDay={(value, e) => handleClick(value, e)} tileContent={renderTileContent} />
+                <div className='absolute right-0 top-0 -mt-10 flex gap-7'>
+                    <i title={`${currentUser.email}`} className="fa-solid fa-user-ninja 
                 text-yellow-300 text-3xl cursor-pointer duration-300 hover:scale-125"
-                    onClick={() => setUserClicked(!userClicked)}></i>
-                {userClicked &&
-                    <button onClick={logout} className='border border solid border-yellow-300 p-1
+                        onClick={() => setUserClicked(!userClicked)}></i>
+                    {userClicked &&
+                        <button onClick={logout} className='border border solid border-yellow-300 p-1
                  duration-300 text-rose-400 hover:text-yellow-300 hover:rounded-md ease-in'>logout</button>}
-            </div>
-            {dateClicked &&
-                <div className='text-center text-yellow-300'>
-                    {userData?.some(event => event.date === dateClicked) && !anotherEvent &&
-                        <EventCard
-                            date={dateClicked}
-                            filteredData={userData.filter(event => event.date === dateClicked)}
-                            setFetchTrigger={setFetchTrigger}
-                            setAnotherEvent={setAnotherEvent}
-                            setEditEvent={setEditEvent} />}
-                    {(!userData?.some(event => event.date === dateClicked) || anotherEvent)
-                        && < Menu
-                            date={dateClicked}
-                            setNewEvent={setNewEvent}
-                            newEvent={newEvent}
-                            editEvent={editEvent} />}
-                </div>}
-        </div>
+                </div>
+                {dateClicked &&
+                    <div className='text-center text-yellow-300'>
+                        {userData?.some(event => event.date === dateClicked) && !anotherEvent &&
+                            <EventCard
+                                date={dateClicked}
+                                filteredData={userData.filter(event => event.date === dateClicked)}
+                                setFetchTrigger={setFetchTrigger}
+                                setAnotherEvent={setAnotherEvent}
+                                setEditEvent={setEditEvent} />}
+                        {(!userData?.some(event => event.date === dateClicked) || anotherEvent)
+                            && < Menu
+                                date={dateClicked}
+                                setNewEvent={setNewEvent}
+                                newEvent={newEvent}
+                                editEvent={editEvent} />}
+                    </div>}
+            </div>)
     )
 }
 
