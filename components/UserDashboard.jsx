@@ -68,9 +68,13 @@ export default function UserDashboard() {
     }
 
     function renderTileContent({ date, view }) {
-        const result = userData.filter(event => event.date === date.toString())
-        return view === 'month' && result.length > 0
-            ? <p className='text-xs text-center'>{result.length === 1 ? `${result.length} event` : `${result.length} events`}</p> : null
+        if (userData.length > 0) {
+            const result = userData.filter(event => event.date === date.toString())
+            return view === 'month' && result.length > 0
+                ? <p className='text-xs text-center'>{result.length === 1 ? `${result.length} event` : `${result.length} events`}</p> : null
+        } else {
+            return null
+        }
     }
 
     return (
