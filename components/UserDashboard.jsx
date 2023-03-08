@@ -32,7 +32,9 @@ export default function UserDashboard() {
     async function fetchUserData() {
         const userRef = doc(db, 'users', currentUser.uid)
         const docSnap = await getDoc(userRef)
-        setUserData(docSnap.data()?.events)
+        if (docSnap.data) {
+            setUserData(docSnap.data()?.events)
+        }
         setFetchTrigger(false)
     }
 
